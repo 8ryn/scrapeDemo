@@ -37,4 +37,17 @@
     <width>340</width>
     <height>30</height>
   </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_4</name>
+    <text>Location</text>
+    <y>220</y>
+    <width>90</width>
+    <height>30</height>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_2</name>
+    <pv_name>bryn:loc</pv_name>
+    <x>100</x>
+    <y>210</y>
+  </widget>
 </display>

@@ -20,4 +20,8 @@ print('First 2 find all results')
 print(test2[0])
 print(test2[1])
 
+test3=soup.find(class_='wr-c-location__name')
+print(test3.find("span").previous_sibling)
+print(test3.text)
+
 
