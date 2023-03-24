@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>Display</name>
+  <widget type="label" version="2.0.0">
+    <name>Label_1</name>
+    <text>Max temp:</text>
+    <y>50</y>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update</name>
+    <pv_name>bryn:maxT</pv_name>
+    <x>100</x>
+    <y>50</y>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_2</name>
+    <text>Min temp:</text>
+    <y>100</y>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_1</name>
+    <pv_name>bryn:minT</pv_name>
+    <x>100</x>
+    <y>100</y>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_3</name>
+    <text>Source URL:</text>
+    <y>160</y>
+    <width>120</width>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>Text Entry</name>
+    <pv_name>bryn:url</pv_name>
+    <x>100</x>
+    <y>152</y>
+    <width>340</width>
+    <height>30</height>
+  </widget>
+</display>

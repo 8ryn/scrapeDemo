@@ -10,10 +10,11 @@ import logging
 builder.SetDeviceName("bryn")
 
 #URL to read weather data from
-url = 'https://www.bbc.co.uk/weather/2647114'
+#url = 'https://www.bbc.co.uk/weather/2647114'
 
 maxTInput = builder.aIn('maxT', initial_value=-999)
 minTInput = builder.aIn('minT', initial_value=-999)
+urlOutput = builder.stringOut('url', initial_value='https://www.bbc.co.uk/weather/2647114')
 
 # Get the IOC started
 builder.LoadDatabase()
@@ -21,6 +22,7 @@ softioc.iocInit()
 
 def getTemps():
     while True:
+        url = urlOutput.get()
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
         allTempLines = soup.find_all(class_='wr-value--temperature--c')
@@ -32,7 +34,7 @@ def getTemps():
         logging.info('Previous min=%i', minTInput.get())
         maxTInput.set(maxTemp)
         minTInput.set(minTemp)
-        cothread.Sleep(5)
+        cothread.Sleep(10)
 
 
 cothread.Spawn(getTemps)
