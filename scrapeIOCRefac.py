@@ -6,61 +6,72 @@ from cothread.catools import *
 import logging
 
 class Weather:
-    
-    def getSoup(url):
-        page = requests.get(url)
-        soup = BeautifulSoup(page.content, "html.parser")
-        return soup
+    def __init__(self,url: str, file_path=False) -> None:
+        if file_path:
+            page = open(url)
+            self.soup =BeautifulSoup(page.read(), "html.parser")
+        else:
+            page = requests.get(url)
+            self.soup = BeautifulSoup(page.content, "html.parser")
 
-    def getMaxT(soup):
-        tempLine = soup.find(class_='wr-value--temperature--c')  #Today's max is first instance
+    
+    def update(self,url: str) -> None:
+        """
+        """
+        page = requests.get(url)
+        self.soup = BeautifulSoup(page.content, "html.parser")
+
+    def getMaxT(self) -> int:
+        tempLine = self.soup.find(class_='wr-value--temperature--c')  #Today's max is first instance
         maxTemp = int(tempLine.text[:-1])
         return maxTemp
     
-    def getMinT(soup):
-        tempLine = soup.find_all(class_='wr-value--temperature--c')[1] #Today's min is second instance
+    def getMinT(self) -> int:
+        tempLine = self.soup.find_all(class_='wr-value--temperature--c')[1] #Today's min is second instance
         minTemp = int(tempLine.text[:-1])
         return minTemp
     
-    def getLoc(soup):
-        locLine=soup.find(class_='wr-c-location__name')
+    def getLoc(self) -> int:
+        locLine=self.soup.find(class_='wr-c-location__name')
         location = locLine.find("span").previous_sibling #Gets just the location avoiding weather warning
         return location
 
 #logging.basicConfig(level=logging.INFO, force=True)
 
-#Device prefix
-builder.SetDeviceName("bryn")
+if __name__ == "__main__":
 
-#Create PVs
-maxTInput = builder.aIn('maxT', initial_value=-999)
-minTInput = builder.aIn('minT', initial_value=-999)
-urlOutput = builder.stringOut('url', initial_value='https://www.bbc.co.uk/weather/2647114')
-locInput = builder.stringIn('loc')
+    #Device prefix
+    builder.SetDeviceName("bryn")
 
-# Get the IOC started
-builder.LoadDatabase()
-softioc.iocInit()
+    #Create PVs
+    maxTInput = builder.aIn('maxT', initial_value=-999)
+    minTInput = builder.aIn('minT', initial_value=-999)
+    urlOutput = builder.stringOut('url', initial_value='https://www.bbc.co.uk/weather/2647114')
+    locInput = builder.stringIn('loc')
 
-def getTemps():
-    while True:
-        url = urlOutput.get()
-        soup = Weather.getSoup(url)
-        maxTemp = Weather.getMaxT(soup)
-        minTemp = Weather.getMinT(soup)
-        location = Weather.getLoc(soup)
-        logging.info('New max =%i', maxTemp)
-        logging.info('Previous max=%i', maxTInput.get())
-        logging.info('New min =%i', minTemp)
-        logging.info('Previous min=%i', minTInput.get())
-        logging.info(location) 
-        maxTInput.set(maxTemp)
-        minTInput.set(minTemp)
-        locInput.set(location)  
-        cothread.Sleep(10)
+    # Get the IOC started
+    builder.LoadDatabase()
+    softioc.iocInit()
+
+    def getTemps(): 
+        while True:
+            url = urlOutput.get()
+            weather = Weather(url)
+            maxTemp = weather.getMaxT()
+            minTemp = weather.getMinT()
+            location = weather.getLoc()
+            logging.info('New max =%i', maxTemp)
+            logging.info('Previous max=%i', maxTInput.get())
+            logging.info('New min =%i', minTemp)
+            logging.info('Previous min=%i', minTInput.get())
+            logging.info(location) 
+            maxTInput.set(maxTemp)
+            minTInput.set(minTemp)
+            locInput.set(location)  
+            cothread.Sleep(10)
 
 
 
-cothread.Spawn(getTemps)
+    cothread.Spawn(getTemps)
 
-cothread.WaitForQuit()
+    cothread.WaitForQuit()
